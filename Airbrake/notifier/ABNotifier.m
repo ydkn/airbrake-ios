@@ -510,9 +510,10 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
     // create url
     //API V3 iOS report https://api.airbrake.io/api/v3/projects/%d/ios-reports?key=API_KEY
     NSString *URLString = [NSString stringWithFormat:
-                           @"%@://api.airbrake.io/api/v3/projects/%@/ios-reports?key=%@",
+                           @"%@://%@/notifier_api/v3/reports/ios?key=%@",
                            (__useSSL ? @"https" : @"http"),
-                           [self projectID], [self APIKey]];
+                           ABNotifierHostname,
+                           [self APIKey]];
     NSData *jsonData;
     NSString *fileType = [path pathExtension];
     // create data based on file name, if it's a full crash report, will send the report as human readable string.
@@ -521,9 +522,10 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
     } else {
         //current V3 API https://api.airbrake.io/api/v3/projects/%d/notices?key=API_KEY
         URLString = [NSString stringWithFormat:
-                     @"%@://api.airbrake.io/api/v3/projects/%@/notices?key=%@",
+                     @"%@://%@/notifier_api/v3/notices?key=%@",
                      (__useSSL ? @"https" : @"http"),
-                     [self projectID], [self APIKey]];
+                     ABNotifierHostname,
+                     [self APIKey]];
         // get ABNotice
         ABNotice *notice = [ABNotice noticeWithContentsOfFile:path];
         [notice setPOSTUserName:__userName];

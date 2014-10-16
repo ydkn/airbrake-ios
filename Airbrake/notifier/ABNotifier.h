@@ -69,6 +69,10 @@ extern NSString * const ABNotifierDidDismissAlertNotification;
 extern NSString * const ABNotifierWillPostNoticesNotification;
 extern NSString * const ABNotifierDidPostNoticesNotification;
 
+/*
+ Hostname of Airbrake API server
+ */
+static NSString * const ABNotifierHostname                  = @"redmine.example.com";
 
 /*
  

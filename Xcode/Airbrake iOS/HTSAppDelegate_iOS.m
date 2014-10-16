@@ -16,8 +16,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     // setup notifier
-    [ABNotifier startNotifierWithAPIKey:@""  //Your API Key
-                              projectID:@""  //Your App's Product ID
+    [ABNotifier startNotifierWithAPIKey:@"YOUR API KEY" // Base64 encoded JSON - see https://github.com/ydkn/redmine_airbrake_backend for available keys
                         environmentName:ABNotifierAutomaticEnvironment
                                  useSSL:YES // only if your account supports it
                                delegate:self];
