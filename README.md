@@ -66,7 +66,7 @@ Now you should be able to access ABNotifier class in your swift project.
 
 First, set up the ABNotifer in your app delegate at the beginning of your 'func application(application: UIApplication!, didFinishLaunchingWithOptions launchOptions: NSDictionary!) -> Bool {'
 ````swift
-ABNotifier.startNotifierWithAPIKey(YOUR_API_KEY, projectID: Your_Product_ID,environmentName: ABNotifierAutomaticEnvironment, useSSL: true);
+ABNotifier.startNotifierWithAPIKey(YOUR_API_KEY, environmentName: ABNotifierAutomaticEnvironment, useSSL: true);
 ````
     
 # Running The Notifier in Objecitve C
@@ -83,7 +83,6 @@ Next, call the start notifier method at the very beginning of your `application:
 
 ````objective-c
 [ABNotifier startNotifierWithAPIKey:@"YOUR_API_KEY"
-                          projectID:@"Your_Product_ID"
                     environmentName:ABNotifierAutomaticEnvironment
                              useSSL:YES // only if your account supports it
                            delegate:self];

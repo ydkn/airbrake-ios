@@ -33,7 +33,6 @@ static SCNetworkReachabilityRef __reachability = nil;
 static id<ABNotifierDelegate> __delegate = nil;
 static NSMutableDictionary *__userData;
 static NSString * __APIKey = nil;
-static NSString * __ABProjectID = nil;
 static BOOL __useSSL = NO;
 static BOOL __displayPrompt = YES;
 static NSString *__userName = @"Anonymous";
@@ -93,24 +92,23 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
 @implementation ABNotifier
 
 #pragma mark - initialize the notifier
-+ (void)startNotifierWithAPIKey:(NSString *)key projectID:(NSString *)projectId environmentName:(NSString *)name useSSL:(BOOL)useSSL {
-    [self startNotifierWithAPIKey:key projectID:projectId environmentName:name useSSL:useSSL delegate:nil];
++ (void)startNotifierWithAPIKey:(NSString *)key environmentName:(NSString *)name useSSL:(BOOL)useSSL {
+    [self startNotifierWithAPIKey:key environmentName:name useSSL:useSSL delegate:nil];
 }
 
-+ (void)startNotifierWithAPIKey:(NSString *)key projectID:(NSString *)projectId environmentName:(NSString *)name useSSL:(BOOL)useSSL delegate:(id<ABNotifierDelegate>)delegate {
-    [self startNotifierWithAPIKey:key projectID:projectId environmentName:name userName:__userName useSSL:useSSL delegate:delegate installExceptionHandler:YES installSignalHandler:YES displayUserPrompt:YES];
++ (void)startNotifierWithAPIKey:(NSString *)key environmentName:(NSString *)name useSSL:(BOOL)useSSL delegate:(id<ABNotifierDelegate>)delegate {
+    [self startNotifierWithAPIKey:key environmentName:name userName:__userName useSSL:useSSL delegate:delegate installExceptionHandler:YES installSignalHandler:YES displayUserPrompt:YES];
 }
-+ (void)startNotifierWithAPIKey:(NSString *)key projectID:(NSString *)projectId environmentName:(NSString *)name useSSL:(BOOL)useSSL delegate:(id<ABNotifierDelegate>)delegate installExceptionHandler:(BOOL)exception installSignalHandler:(BOOL)signal {
-    [self startNotifierWithAPIKey:key projectID:projectId environmentName:name userName:__userName useSSL:useSSL delegate:delegate installExceptionHandler:exception installSignalHandler:signal displayUserPrompt:YES];
++ (void)startNotifierWithAPIKey:(NSString *)key environmentName:(NSString *)name useSSL:(BOOL)useSSL delegate:(id<ABNotifierDelegate>)delegate installExceptionHandler:(BOOL)exception installSignalHandler:(BOOL)signal {
+    [self startNotifierWithAPIKey:key environmentName:name userName:__userName useSSL:useSSL delegate:delegate installExceptionHandler:exception installSignalHandler:signal displayUserPrompt:YES];
 }
 
 + (void)startNotifierWithAPIKey:(NSString *)key
-                      projectID:(NSString *)projectId
                 environmentName:(NSString *)name
                        userName:(NSString *)username
                          useSSL:(BOOL)useSSL
                        delegate:(id<ABNotifierDelegate>)delegate {
-    [self startNotifierWithAPIKey:key projectID:projectId environmentName:name userName:username useSSL:useSSL delegate:delegate
+    [self startNotifierWithAPIKey:key environmentName:name userName:username useSSL:useSSL delegate:delegate
           installExceptionHandler:YES
              installSignalHandler:YES
                 displayUserPrompt:YES];
@@ -118,7 +116,6 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
 
 
 + (void)startNotifierWithAPIKey:(NSString *)key
-                      projectID:(NSString *)projectId
                 environmentName:(NSString *)name
                        userName:(NSString *)username
                          useSSL:(BOOL)useSSL
@@ -148,9 +145,8 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
             // start crashreport
             [[ABCrashReport sharedInstance] startCrashReport];
             // switch on api key and project id
-            if ([key length] && [projectId length]) {
+            if ([key length]) {
                 __APIKey = [key copy];
-                __ABProjectID = [projectId copy];
                 __reachability = SCNetworkReachabilityCreateWithName(NULL, [ABNotifierHostName UTF8String]);
                 if (SCNetworkReachabilitySetCallback(__reachability, ABNotifierReachabilityDidChange, nil)) {
                     if (!SCNetworkReachabilityScheduleWithRunLoop(__reachability, CFRunLoopGetMain(), kCFRunLoopDefaultMode)) {
@@ -228,11 +224,6 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
 + (NSString *)APIKey {
     @synchronized(self) {
         return __APIKey;
-    }
-}
-+ (NSString *)projectID {
-    @synchronized(self) {
-        return __ABProjectID;
     }
 }
 
