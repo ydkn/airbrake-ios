@@ -803,19 +803,23 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
 + (void)postAllNotices {
     static dispatch_once_t token;
     dispatch_once(&token, ^{
-        NSArray *paths = [ABNotifier pathsForAllNotices];
-        if ([paths count]) {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:ABNotifierAlwaysSendKey] ||
-                !__displayPrompt) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [ABNotifier postNoticesWithPaths:paths];
-                });
-            }
-            else {
-                [ABNotifier showNoticeAlertForNoticesWithPaths:paths];
-            }
-        }
+        [self postAllNoticesAnyway];
     });
+}
+
++ (void)postAllNoticesAnyway {
+    NSArray *paths = [ABNotifier pathsForAllNotices];
+    if ([paths count]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:ABNotifierAlwaysSendKey] ||
+            !__displayPrompt) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [ABNotifier postNoticesWithPaths:paths];
+            });
+        }
+        else {
+            [ABNotifier showNoticeAlertForNoticesWithPaths:paths];
+        }
+    }
 }
 
 @end

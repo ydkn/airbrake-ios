@@ -202,5 +202,6 @@ extern NSString * const ABNotifierDidPostNoticesNotification;
  
  */
 + (void)postAllNotices;
++ (void)postAllNoticesAnyway;
 
 @end
