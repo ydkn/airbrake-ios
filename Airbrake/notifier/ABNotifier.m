@@ -299,15 +299,18 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
             [exceptionParameters setValue:ABNotifierVirtualMemoryUsage() forKey:@"Virtual Memory Size"];
             
             // write exception
-            NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+            NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                         [exception name], ABNotifierExceptionNameKey,
                                         [exception reason], ABNotifierExceptionReasonKey,
-                                        [exception callStackSymbols], ABNotifierCallStackKey,
                                         exceptionParameters, ABNotifierExceptionParametersKey,
 #if TARGET_OS_IPHONE
                                         ABNotifierCurrentViewController(), ABNotifierControllerKey,
 #endif
                                         nil];
+            if (exception.callStackSymbols) {
+                dictionary[ABNotifierCallStackKey] = [exception callStackSymbols];
+            }
+
             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:dictionary];
             unsigned long length = [data length];
             write(fd, &length, sizeof(unsigned long));
