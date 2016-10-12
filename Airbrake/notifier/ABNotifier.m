@@ -799,25 +799,30 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
     return NO;
 }
 
+#pragma mark - send all notices
++ (void)postAllNotices {
+    static dispatch_once_t token;
+    dispatch_once(&token, ^{
+        NSArray *paths = [ABNotifier pathsForAllNotices];
+        if ([paths count]) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:ABNotifierAlwaysSendKey] ||
+                !__displayPrompt) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [ABNotifier postNoticesWithPaths:paths];
+                });
+            }
+            else {
+                [ABNotifier showNoticeAlertForNoticesWithPaths:paths];
+            }
+        }
+    });
+}
+
 @end
 
 #pragma mark - reachability change
 void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
     if ([ABNotifier isReachable:flags]) {
-        static dispatch_once_t token;
-        dispatch_once(&token, ^{
-            NSArray *paths = [ABNotifier pathsForAllNotices];
-            if ([paths count]) {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:ABNotifierAlwaysSendKey] ||
-                    !__displayPrompt) {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        [ABNotifier postNoticesWithPaths:paths];
-                    });
-                }
-                else {
-                    [ABNotifier showNoticeAlertForNoticesWithPaths:paths];
-                }
-            }
-        });
+        [ABNotifier postAllNotices];
     }
 }

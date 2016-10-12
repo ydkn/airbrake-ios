@@ -196,4 +196,11 @@ extern NSString * const ABNotifierDidPostNoticesNotification;
 + (void)removeEnvironmentValueForKey:(NSString *)key;
 + (void)removeEnvironmentValuesForKeys:(NSArray *)keys;
 
+/*
+ 
+ Send all outstanding notices.
+ 
+ */
++ (void)postAllNotices;
+
 @end
