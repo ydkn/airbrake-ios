@@ -43,7 +43,7 @@ static NSString *__userName = @"Anonymous";
 static NSString *__envName = nil;
 static NSString *__noticePath = nil;
 // constant strings
-static NSString * const ABNotifierHostName                  = @"airbrake.io";
+static NSString * const ABNotifierHostName                  = @"api.airbrake.io";
 static NSString * const ABNotifierAlwaysSendKey             = @"AlwaysSendCrashReports";
 NSString * const ABNotifierWillDisplayAlertNotification     = @"ABNotifierWillDisplayAlert";
 NSString * const ABNotifierDidDismissAlertNotification      = @"ABNotifierDidDismissAlert";
@@ -187,7 +187,7 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
             if ([key length] && [projectId length]) {
                 __APIKey = [key copy];
                 __ABProjectID = [projectId copy];
-                __reachability = SCNetworkReachabilityCreateWithName(NULL, [ABNotifierHostName UTF8String]);
+                __reachability = SCNetworkReachabilityCreateWithName(NULL, [__hostName UTF8String]);
                 if (SCNetworkReachabilitySetCallback(__reachability, ABNotifierReachabilityDidChange, nil)) {
                     if (!SCNetworkReachabilityScheduleWithRunLoop(__reachability, CFRunLoopGetMain(), kCFRunLoopDefaultMode)) {
                         ABLog(@"Reachability could not be configired. No notices will be posted.");
@@ -546,7 +546,7 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
     // create url
     //API V3 iOS report https://api.airbrake.io/api/v3/projects/%d/ios-reports?key=API_KEY
     NSString *URLString = [NSString stringWithFormat:
-                           @"%@://api.%@/api/v3/projects/%@/ios-reports?key=%@",
+                           @"%@://%@/api/v3/projects/%@/ios-reports?key=%@",
                            (__useSSL ? @"https" : @"http"), __hostName,
                            [self projectID], [self APIKey]];
     NSData *jsonData;
@@ -557,7 +557,7 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
     } else {
         //current V3 API https://api.airbrake.io/api/v3/projects/%d/notices?key=API_KEY
         URLString = [NSString stringWithFormat:
-                     @"%@://api.%@/api/v3/projects/%@/notices?key=%@",
+                     @"%@://%@/api/v3/projects/%@/notices?key=%@",
                      (__useSSL ? @"https" : @"http"), __hostName,
                      [self projectID], [self APIKey]];
         // get ABNotice
