@@ -734,7 +734,7 @@ void ABNotifierReachabilityDidChange(SCNetworkReachabilityRef target, SCNetworkR
         [alert addAction:alwaysSend];
         [alert addAction:send];
         [alert addAction:cancel];
-        [[[UIApplication sharedApplication] delegate].window.rootViewController presentViewController:alert animated:YES completion:nil];
+        [UIApplication.sharedApplication.delegate.window.rootViewController.presentedViewController ?: UIApplication.sharedApplication.delegate.window.rootViewController presentViewController:alert animated:YES completion:nil];
     } else {
         GCAlertView *alert = [[GCAlertView alloc] initWithTitle:title message:body];
         [alert addButtonWithTitle:ABLocalizedString(@"ALWAYS_SEND") block:^{
